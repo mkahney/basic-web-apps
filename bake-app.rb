@@ -15,10 +15,14 @@ get("/") do
   body(html)
 end
 
-get("/waffles") do
+get("/giraffe") do
   html = ""
 
-  html.concat("<h1>Waffles are delicious.</h1>")
+  html.concat("<h1>Giraffes are delicious.</h1>")
+    html.concat("<h1>Dinosour are delicious.</h1>")
+  html.concat("<h1>Giraffes are delicious.</h1>")
+  html.concat("<h1>Giraffes are delicious.</h1>")
+
 
   body(html)
 end
@@ -27,8 +31,8 @@ get("/waffles/chocolate") do
   html = ""
 
   html.concat("<h1>Chocolate waffles: more delicious.</h1>")
-  html.concat("<p>Don't believe me?!</p>")
-
+  html.concat("<p>Do you not believe me?!</p>")
+  html.concat("<a href='/'>return</a>")
   body(html)
 end
 

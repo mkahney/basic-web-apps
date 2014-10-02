@@ -27,6 +27,16 @@
               <div class="message-timestamp">
                 Posted on <%= message.created_at.strftime("%B %d, %Y at %l:%M%p") %>
               </div>
+              <div class="message-actions">
+                <form action="/messages/<%= message.id %>/comments" method="POST">
+                  <strong>Comment: <%= message.comment %></strong>
+                  <button type="submit">Comment!</button>
+                  <input type="text" name="comment">
+                  <input type="text" name="comment">
+                  <input type="text" name="comment">
+                  <input type="text" name="comment">
+                </form>
+              </div>
             </li>
           <% end %>
         </ol>
