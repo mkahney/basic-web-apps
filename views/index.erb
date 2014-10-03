@@ -22,7 +22,9 @@
           <% messages.each do |message| %>
             <li>
               <div class="message-body">
-                <%= message.body %>
+                <%= message.body %> <br/>
+                Total likes:
+                <%= message.total_likes %> 
               </div>
               <div class="message-timestamp">
                 Posted on <%= message.created_at.strftime("%B %d, %Y at %l:%M%p") %>
@@ -32,9 +34,12 @@
                   <strong>Comment: <%= message.comment %></strong>
                   <button type="submit">Comment!</button>
                   <input type="text" name="comment">
-                  <input type="text" name="comment">
-                  <input type="text" name="comment">
-                  <input type="text" name="comment">
+                </form>
+                <form action="/messages/<%= message.id %>/likes" method="POST">
+                  <button type="submit">Like!</button>
+                </form>
+                <form action="/messages/<%= message.id %>/dislikes" method="POST">
+                  <button type="submit">Dislike!</button>
                 </form>
               </div>
             </li>

@@ -8,16 +8,24 @@ class Message
 
   
   property :comment,    Text, required: false
+  property :like,       Integer, required:true, default:0
+  property :dislike,    Integer, required: true, default:0
   property :id,         Serial
   property :body,       Text,     required: true
   property :created_at, DateTime, required: true
+  
+  def total_likes
+    self.like - self.dislike
+  end
 end
 
 DataMapper.finalize()
 DataMapper.auto_upgrade!()
 
 get("/") do
-  records = Message.all(order: :created_at.desc)
+  records = Message.all
+  records = records.sort_by(&:total_likes).reverse
+   
   erb(:index, locals: { messages: records })
 end
 get '/message' do
@@ -42,10 +50,31 @@ end
 
 post("/messages/*/comments") do |message_id|
   message = Message.get(message_id)
-  message.comment1 = params["comment"]
-  message.comment2 = params["comment"]
-  message.comment3 = params["comment"]
-  message.comment4 = params["comment"]
+  message.comment = params["comment"]
+  
+
+  if message.save
+    redirect("/")
+  else
+    body("Something went terribly wrong!")
+  end
+end
+
+post("/messages/*/dislikes") do |message_id|
+  message = Message.get(message_id)
+  message.dislike=message.dislike+1
+  
+
+  if message.save
+    redirect("/")
+  else
+    body("Something went terribly wrong!")
+  end
+end
+
+post("/messages/*/likes") do |message_id|
+  message = Message.get(message_id)
+  message.like=message.like+1
   
 
   if message.save
