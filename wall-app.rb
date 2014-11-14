@@ -53,6 +53,7 @@ class Photo
   mount_uploader :source,   PhotoUploader
   property :likes,          Integer, default:0
   property :dislikes,       Integer, default:0
+  property :title,          Text, required: true, default: ""
   
   def total_likes
     self.like - self.dislike
@@ -166,13 +167,9 @@ post("/messages") do
 end
 
 get("/") do
-  photos = Photo.all
-  erb(:index, :locals => { :photos => photos })
-end
- get("/") do
  records = Message.all
  records = records.sort_by(&:total_likes).reverse
-
+end
 get("/photos/new") do
   photo = Photo.new
   erb(:photos_new, :locals => { :photo => photo })
@@ -193,8 +190,3 @@ post("/photos") do
   end
 end
 
-get("/") do
-  photos = Photo.all
-  erb(:index, :locals => { :photos => photos })
-  end
-end

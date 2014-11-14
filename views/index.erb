@@ -56,17 +56,18 @@
               
                   <label for="photos-source">File</label>
                   <input id="photos-source" name="photo[source]" type="file">
+                  <input name="photo[message_id]" type="hidden" value="<%= message.id %>">
               
                   <button type="submit">Upload Photo</button>
                 </form>
                 <%if message.photo %>
-                <form action="/photo/<%= photo.id %>/destroy" method="POST">
+                <form action="/photos/<%= message.photo.id %>/destroy" method="POST">
                   <button type="submit">Delete! </button>
                 </form>
-                <form action="/messages/<%= message.id %>/dislikes" method="POST">
+                <form action="/photos/<%= message.photo.id %>/dislikes" method="POST">
                   <button type="submit">Dislike!</button>
                 </form>
-                <form action="/photo/<%= photo.id %>/likes" method="POST">
+                <form action="/photos/<%= message.photo.id %>/likes" method="POST">
                   <button type="submit">Like!</button>
                 </form>
                 <%end%>
