@@ -30,17 +30,46 @@
                 Posted on <%= message.created_at.strftime("%B %d, %Y at %l:%M%p") %>
               </div>
               <div class="message-actions">
-                <form action="/messages/<%= message.id %>/comments" method="POST">
-                  <strong>Comment: <%= message.comment %></strong>
-                  <button type="submit">Comment!</button>
-                  <input type="text" name="comment">
-                </form>
                 <form action="/messages/<%= message.id %>/likes" method="POST">
                   <button type="submit">Like!</button>
                 </form>
                 <form action="/messages/<%= message.id %>/dislikes" method="POST">
                   <button type="submit">Dislike!</button>
                 </form>
+                <form action="/messages/<%= message.id %>/comments" method="POST">
+                  <textarea name="comment_body"></textarea>
+                  <button type="submit">Add Comment</button>
+                </form>
+                <h3>Comments</h3>
+                <% message.comments.each do |comment| %>
+                  <p><%= comment.body %></p> 
+                <% end %>
+                <form action="/messages/<%= message.id %>/destroy" method="POST">
+                  <button type="submit">Delete! </button>
+                </form>
+                <form method="POST" action="/photos" enctype="multipart/form-data"
+                      class="horizontal-form">
+              
+                  <label for="photos-title">Photo Title</label>
+                  <input id="photos-title" name="photo[title]"
+                    type="text" 
+              
+                  <label for="photos-source">File</label>
+                  <input id="photos-source" name="photo[source]" type="file">
+              
+                  <button type="submit">Upload Photo</button>
+                </form>
+                <%if message.photo %>
+                <form action="/photo/<%= photo.id %>/destroy" method="POST">
+                  <button type="submit">Delete! </button>
+                </form>
+                <form action="/messages/<%= message.id %>/dislikes" method="POST">
+                  <button type="submit">Dislike!</button>
+                </form>
+                <form action="/photo/<%= photo.id %>/likes" method="POST">
+                  <button type="submit">Like!</button>
+                </form>
+                <%end%>
               </div>
             </li>
           <% end %>

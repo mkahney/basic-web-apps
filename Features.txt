@@ -1,0 +1,13 @@
+create users
+
+limit likes and dislikes per users
+
+upload photos
+
+profile management
+-change background color
+-change profile picture
+-username
+-password
+-individual wall
+-status
