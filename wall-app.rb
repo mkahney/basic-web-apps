@@ -150,3 +150,21 @@ post("/login") do
     redirect("/GOOD")
   end
 end
+
+post("/signUp") do
+  signUp_params = params[:signUp]
+  puts signUp_params
+  email = signUp_params[:username]
+
+  if User.count(:username=>email) == 0
+    username = User.create(signUp_params)
+    if username.saved?
+      redirect("/")
+    else
+      erb(:error)
+   end
+  else 
+   redirect("/unauthorized")
+  end
+end
+  

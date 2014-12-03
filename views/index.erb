@@ -10,6 +10,11 @@
   <body>
     <div id="page">
       <h1>Social Wall</h1>
+      <form id= "signUp-form" method="POST" action="/signUp" enctype="multipart/form-data">
+        <textarea id="signUp-form" name="signUp[username]"></textarea>
+        <textarea id="signUp-form" name="signUp[password]"></textarea>
+        <button type "submit">Sign Up</button>
+      </form>
       <form id= "login-form" method="POST" action="/login" enctype="multipart/form-data">
         <textarea id="login-form" name="login[username]"></textarea>
         <textarea id="login-form" name="login[password]"></textarea>
