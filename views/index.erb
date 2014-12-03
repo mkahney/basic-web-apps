@@ -10,8 +10,15 @@
   <body>
     <div id="page">
       <h1>Social Wall</h1>
-      <form id="message-form" method="POST" action="/messages">
-        <textarea id="message-body" name="body" placeholder="Enter a message here."></textarea>
+      <form id= "login-form" method="POST" action="/login" enctype="multipart/form-data">
+        <textarea id="login-form" name="login[username]"></textarea>
+        <textarea id="login-form" name="login[password]"></textarea>
+        <button type "submit">Login</button>
+      </form>
+      <form id="message-form" method="POST" action="/messages" enctype="multipart/form-data">
+        <textarea id="message-body" name="message[body]" placeholder="Enter a message here."></textarea>
+        <label for="message-photo">File</label>
+        <input id="message-photo" name="message[photo]" type="file">
         <button type="submit">Post Message</button>
       </form>
       <% if messages.empty? %>
@@ -22,9 +29,13 @@
           <% messages.each do |message| %>
             <li>
               <div class="message-body">
-                <%= message.body %> <br/>
+                <% if message.has_photo? %>
+                  <p><img src="<%= message.photo_url %>"></p>
+                <% else %>
+                  <p><%= message.body %></p>
+                <% end %>
                 Total likes:
-                <%= message.total_likes %> 
+                <%= message.total_likes %>
               </div>
               <div class="message-timestamp">
                 Posted on <%= message.created_at.strftime("%B %d, %Y at %l:%M%p") %>
@@ -47,30 +58,6 @@
                 <form action="/messages/<%= message.id %>/destroy" method="POST">
                   <button type="submit">Delete! </button>
                 </form>
-                <form method="POST" action="/photos" enctype="multipart/form-data"
-                      class="horizontal-form">
-              
-                  <label for="photos-title">Photo Title</label>
-                  <input id="photos-title" name="photo[title]"
-                    type="text" 
-              
-                  <label for="photos-source">File</label>
-                  <input id="photos-source" name="photo[source]" type="file">
-                  <input name="photo[message_id]" type="hidden" value="<%= message.id %>">
-              
-                  <button type="submit">Upload Photo</button>
-                </form>
-                <%if message.photo %>
-                <form action="/photos/<%= message.photo.id %>/destroy" method="POST">
-                  <button type="submit">Delete! </button>
-                </form>
-                <form action="/photos/<%= message.photo.id %>/dislikes" method="POST">
-                  <button type="submit">Dislike!</button>
-                </form>
-                <form action="/photos/<%= message.photo.id %>/likes" method="POST">
-                  <button type="submit">Like!</button>
-                </form>
-                <%end%>
               </div>
             </li>
           <% end %>

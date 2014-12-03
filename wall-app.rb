@@ -8,17 +8,23 @@ require "./photo_uploader"
 class Message
   include DataMapper::Resource
 
+  property :id,         Serial
   property :like,       Integer, required:true, default:0
   property :dislike,    Integer, required: true, default:0
-  property :id,         Serial
-  property :body,       Text,     required: true
+  property :body,       Text
   property :created_at, DateTime, required: true
-  
+
+  mount_uploader :photo,   PhotoUploader
+
+  has n, :comments
+
   def total_likes
     self.like - self.dislike
   end
-  has n, :comments
-  has 1, :photo
+  
+  def has_photo?
+    self[:photo] != nil
+  end
 end
 
 # needs tp belong to user who posted it and users's wall
@@ -41,24 +47,7 @@ class Comment
   property :id,           Serial
   property :body,         Text
   property :created_at,   DateTime
- 
-  belongs_to :message
-  belongs_to :photo
-end
 
-class Photo
-  include DataMapper::Resource
-  
-  property :id,             Serial
-  mount_uploader :source,   PhotoUploader
-  property :likes,          Integer, default:0
-  property :dislikes,       Integer, default:0
-  property :title,          Text, required: true, default: ""
-  
-  def total_likes
-    self.like - self.dislike
-  end
-  has n, :comments
   belongs_to :message
 end
 
@@ -69,21 +58,30 @@ DataMapper.auto_upgrade!()
 get("/") do
   records = Message.all
   records = records.sort_by(&:total_likes).reverse
-   
+  
   erb(:index, locals: { messages: records })
 end
+
 get '/message' do
   message_id=params["id"]
   message = Message.first(id: message_id)
   message.body
 end
+
 post("/messages") do
-  message_body = params["body"]
-  message_time = DateTime.now
+  message_params = params[:message]
+  
+  if message_params[:body] == ""
+    message_params[:body] = nil
+  end
+  
+  if message_params[:photo] == ""
+    message_params[:photo] = nil
+  end
+  
+  message_params[:created_at] = DateTime.now
 
-
-  message = Message.create(body: message_body, created_at: message_time)
-
+  message = Message.create(message_params)
 
   if message.saved?
     redirect("/")
@@ -91,19 +89,6 @@ post("/messages") do
     erb(:error)
   end
 end
-
-# post("/messages/*/comments") do |message_id|
-#   message = Message.get(message_id)
-#   message.comment = params["comment"]
-#   # message.comment = "this is a comment"
-  
-
-#   if message.save
-#   redirect("/")
-#   else
-#   body("Something went terribly wrong!")
-#   end
-# end
 
 post("/messages/*/comments") do |message_id|
   message = Message.get(message_id)
@@ -153,40 +138,15 @@ post("/messages/*/destroy") do |message_id|
   end
 end
 
-post("/messages") do
-  message_body = params["body"]
-  message_time = DateTime.now
- 
-  message = Message.create(body: message_body, created_at: message_time)
- 
-  if message.saved?
-    redirect("/")
-  else
-    erb(:error)
+
+post("/login") do
+  login_params = params[:login]
+  puts login_params
+  email = login_params[:username]
+
+  if User.count(:username=>email) == 0
+    redirect("/unauthorized")
+  else 
+    redirect("/GOOD")
   end
 end
-
-get("/") do
- records = Message.all
- records = records.sort_by(&:total_likes).reverse
-end
-get("/photos/new") do
-  photo = Photo.new
-  erb(:photos_new, :locals => { :photo => photo })
-end
-
-get("/photos/*") do |photo_id|
-  photo = Photo.get(photo_id)
-  erb(:photos_show, :locals => { :photo => photo })
-end
-
-post("/photos") do
-  photo = Photo.create(params[:photo])
-
-  if photo.saved?
-    redirect("/")
-  else
-    erb(:photos_new, :locals => { :photo => photo })
-  end
-end
-
