@@ -51,15 +51,19 @@ class Comment
   belongs_to :message
 end
 
+enable :sessions
 
 DataMapper.finalize()
 DataMapper.auto_upgrade!()
 
+header_style = "style='color:red;font-family:Times;'"
+
 get("/") do
   records = Message.all
   records = records.sort_by(&:total_likes).reverse
+  user = User.get(session[:user_id])
+  erb(:index, locals: { messages: records, current_user: user })
   
-  erb(:index, locals: { messages: records })
 end
 
 get '/message' do
@@ -144,11 +148,21 @@ post("/login") do
   puts login_params
   email = login_params[:username]
 
-  if User.count(:username=>email) == 0
-    redirect("/unauthorized")
-  else 
-    redirect("/GOOD")
-  end
+  # if User.count(:username=>email) == 0
+  #   redirect("/unauthorized")
+  # else 
+  #   redirect("/GOOD")
+  # end
+
+  user = User.first(username: email)
+  session[:user_id] = user.id
+  redirect('/')
+
+end
+
+post '/logout' do
+  session[:user_id] = nil
+  redirect('/')
 end
 
 post("/signUp") do

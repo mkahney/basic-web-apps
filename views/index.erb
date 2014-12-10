@@ -9,35 +9,44 @@
   </head>
   <body>
     <div id="page">
-      <h1>Social Wall</h1>
-      <form id= "signUp-form" method="POST" action="/signUp" enctype="multipart/form-data">
-        <textarea id="signUp-form" name="signUp[username]"></textarea>
-        <textarea id="signUp-form" name="signUp[password]"></textarea>
-        <button type "submit">Sign Up</button>
-      </form>
-      <form id= "login-form" method="POST" action="/login" enctype="multipart/form-data">
-        <textarea id="login-form" name="login[username]"></textarea>
-        <textarea id="login-form" name="login[password]"></textarea>
-        <button type "submit">Login</button>
-      </form>
+      <h1 style= "font-family:Georgia; color:blue;font-size:50pt">Social Wall</h1>
+      <% if !current_user %>  
+        <form id="signUp-form" method="POST" action="/signUp" enctype="multipart/form-data">
+          <textarea id="signUp-form" name="signUp[username]"></textarea>
+          <textarea id="signUp-form" name="signUp[password]"></textarea>
+          <button type="submit">Sign Up</button>
+        </form>
+        <form id="login-form" method="POST" action="/login" enctype="multipart/form-data">
+          <textarea id="login-form" name="login[username]"></textarea>
+          <textarea id="login-form" name="login[password]"></textarea>
+          <button type="submit">Login</button>
+        </form>
+      <% else %>
+        <form action="/logout" method="POST">
+          <button type="submit">Log Out</button>
+        </form>
+      <% end %>
+      
+    <% if current_user %>      
       <form id="message-form" method="POST" action="/messages" enctype="multipart/form-data">
         <textarea id="message-body" name="message[body]" placeholder="Enter a message here."></textarea>
-        <label for="message-photo">File</label>
+        <label for="message-photo" style= "font-family:Georgia; color:blue">File</label>
         <input id="message-photo" name="message[photo]" type="file">
-        <button type="submit">Post Message</button>
+        <button type="submit" style= "font-family:Georgia; color:blue" style= "font-family:Georgia; color:blue">Post Message</button>
       </form>
+    <% end %>
       <% if messages.empty? %>
-        <h2>Sorry, no messages. :(</h2>
+        <h2 style= "font-family:Georgia; color:blue">Sorry, no messages.  :(</h2>
       <% else %>
-        <h2>Messages</h2>
+        <h2 style= "font-family:Georgia; color:blue">Messages</h2>
         <ol class="message-list">
           <% messages.each do |message| %>
             <li>
-              <div class="message-body">
+              <div class="message-body" style= "font-family:Georgia; color:purple">
                 <% if message.has_photo? %>
                   <p><img src="<%= message.photo_url %>"></p>
                 <% else %>
-                  <p><%= message.body %></p>
+                  <p message.body %></p>
                 <% end %>
                 Total likes:
                 <%= message.total_likes %>
@@ -46,22 +55,28 @@
                 Posted on <%= message.created_at.strftime("%B %d, %Y at %l:%M%p") %>
               </div>
               <div class="message-actions">
+                <% if current_user %>    
                 <form action="/messages/<%= message.id %>/likes" method="POST">
-                  <button type="submit">Like!</button>
+                  <button type="submit" style= "font-family:Georgia; color:blue">Like!</button>
                 </form>
                 <form action="/messages/<%= message.id %>/dislikes" method="POST">
-                  <button type="submit">Dislike!</button>
+                  <button type="submit" style= "font-family:Georgia; color:blue">Dislike!</button>
                 </form>
                 <form action="/messages/<%= message.id %>/comments" method="POST">
                   <textarea name="comment_body"></textarea>
-                  <button type="submit">Add Comment</button>
+                  <button type="submit" style= "font-family:Georgia; color:blue">Add Comment</button>
                 </form>
-                <h3>Comments</h3>
+              <% end %>
+              <% if !comment_body = nil %>  
+                <h3 style= "font-family:Georgia; color:blue">Comments</h3>
                 <% message.comments.each do |comment| %>
                   <p><%= comment.body %></p> 
                 <% end %>
+              <% end %>  
+              <% if current_user %>  
                 <form action="/messages/<%= message.id %>/destroy" method="POST">
-                  <button type="submit">Delete! </button>
+                  <button type="submit" style= "font-family:Georgia; color:blue">Delete! </button>
+              <% end %>
                 </form>
               </div>
             </li>
