@@ -74,7 +74,7 @@ end
 
 post("/messages") do
   message_params = params[:message]
-  
+ 
   if message_params[:body] == ""
     message_params[:body] = nil
   end

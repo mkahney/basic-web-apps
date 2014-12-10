@@ -46,7 +46,7 @@
                 <% if message.has_photo? %>
                   <p><img src="<%= message.photo_url %>"></p>
                 <% else %>
-                  <p message.body %></p>
+                  <p><%= message.body %></p>
                 <% end %>
                 Total likes:
                 <%= message.total_likes %>
@@ -67,7 +67,7 @@
                   <button type="submit" style= "font-family:Georgia; color:blue">Add Comment</button>
                 </form>
               <% end %>
-              <% if !comment_body = nil %>  
+              <% if message.comments.length > 0 %>  
                 <h3 style= "font-family:Georgia; color:blue">Comments</h3>
                 <% message.comments.each do |comment| %>
                   <p><%= comment.body %></p> 
